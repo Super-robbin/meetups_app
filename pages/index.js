@@ -1,31 +1,5 @@
+import { MongoClient } from "mongodb";
 import MeetupList from "@/components/meetups/MeetupList";
-
-const DUMMY_MEETUPS = [
-  {
-    id: "m1",
-    title: "A First Meetup",
-    image:
-      "https://greatruns.com/wp-content/uploads/2018/04/Kata-Beach-Michael-T.jpg",
-    address: "Some address 5, 12345 Some City",
-    description: "This is a first meetup!",
-  },
-  {
-    id: "m2",
-    title: "A Second Meetup",
-    image:
-      "https://greatruns.com/wp-content/uploads/2018/04/Kata-Beach-Michael-T.jpg",
-    address: "Some address 5, 39432 Some City",
-    description: "This is a second meetup!",
-  },
-  {
-    id: "m3",
-    title: "A Third Meetup",
-    image:
-      "https://greatruns.com/wp-content/uploads/2018/04/Kata-Beach-Michael-T.jpg",
-    address: "Some address 5, 92843 Some City",
-    description: "This is a third meetup!",
-  },
-];
 
 // Static Generation - By default, your page is not pre-rendered
 // on the fly on the server when a request reaches the server but instead,
@@ -50,12 +24,28 @@ const HomePage = (props) => {
 
 export const getStaticProps = async () => {
   // fetch data from an API
+  const client = await MongoClient.connect(
+    "mongodb+srv://robertoquadraccia90:KJ6YX6atbI8065Cz@cluster0.z8a93pe.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
+  const db = client.db();
+
+  const meetupsCollection = db.collection("meetups");
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  client.close();
+
   return {
     props: {
       // as to be named props, it will be the props passed to HomePage above
-      meetups: DUMMY_MEETUPS,
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString(),
+      })),
     },
-    revalidate: 10
+    revalidate: 10,
     // 10 - number of seconds NextJS will wait until it regenerates this page
     // (on the server after deployment) for an incoming request (if any)
   };
