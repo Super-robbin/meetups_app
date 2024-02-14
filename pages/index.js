@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { MongoClient } from "mongodb";
 import MeetupList from "@/components/meetups/MeetupList";
 
@@ -7,7 +8,18 @@ import MeetupList from "@/components/meetups/MeetupList";
 // It means that after it was deployed, that pre-rendered page does not change, at least not by default.
 
 const HomePage = (props) => {
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <>
+      <Head>
+        <title>React Meetups</title>
+        <meta
+          name="description"
+          content="Browse a huge list of highly active React meetups!"
+        />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </>
+  );
 };
 
 // The function below only works in the page component files, not in other component files.
