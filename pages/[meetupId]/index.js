@@ -50,7 +50,7 @@ export const getStaticPaths = async () => {
     // Fallback is a nice feature because it allows you to pre-generate some of your pages
     // for specific meetup ID values.
 
-    fallback: false,
+    fallback: 'blocking',
     paths: meetups.map((meetup) => ({
       params: { meetupId: meetup._id.toString() },
     })),
